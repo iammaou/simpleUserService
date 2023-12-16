@@ -17,16 +17,15 @@ public class userService{
         return repo.findAll();
     }
 
-    public User get(int id){
-        return repo.getReferenceById(id);
+    public Object get(Long id){
+        return repo.findById(id);
     }
 
-    public String save(User usr){
+    public void save(User usr){
         repo.save(usr);
-        return null;
     }
 
-    public void delete(int id){
+    public void delete(Long id){
         repo.deleteById(id);
     }
 

@@ -3,32 +3,34 @@ package com.example.userService.controller;
 import com.example.userService.service.userService;
 import com.example.userService.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+
+@RestController
 public class UserController {
 
     @Autowired
     private userService serv;
 
     @GetMapping("/users")
-    public String getAll() {
-        return serv.listAll().toString();
+    public List<User> getAll() {
+        return serv.listAll();
     }
 
     @GetMapping("/users/{id}")
-    public User getUser(@PathVariable int id){
+    public Object getUser(@PathVariable Long id){
         return serv.get(id);
     }
 
-    @PostMapping("/users")
-    public String saveUser(@RequestBody User User) {
-        return serv.save(User);
+    @PostMapping("/users/add")
+    public void saveUser(@RequestBody User User) {
+        serv.save(User);
     }
 
     @DeleteMapping("/users/delete/{id}")
-    public void deleteUser(@PathVariable int id){
+    public void deleteUser(@PathVariable Long id){
         serv.delete(id);
     }
 }

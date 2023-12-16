@@ -4,10 +4,10 @@ import jakarta.persistence.*;
 
 import java.util.Date;
 
-@Entity(name = "users")
+@Entity
+@Table(name = "users")
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
     private String firstName;
     private String lastName;
@@ -24,6 +24,12 @@ public class User {
         this.postal = postal;
     }
 
+    public User(){
+        super();
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getId() {
         return id;
     }
@@ -32,6 +38,7 @@ public class User {
         this.id = id;
     }
 
+    @Column(name = "first_name")
     public String getFirstName() {
         return firstName;
     }
@@ -40,6 +47,7 @@ public class User {
         this.firstName = firstName;
     }
 
+    @Column(name = "last_name")
     public String getLastName() {
         return lastName;
     }
@@ -47,7 +55,7 @@ public class User {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-
+    @Column(name = "email")
     public String getEmail() {
         return email;
     }
@@ -55,7 +63,7 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-
+    @Column(name = "birthday")
     public Date getBirth() {
         return birth;
     }
@@ -64,6 +72,7 @@ public class User {
         this.birth = birth;
     }
 
+    @Column(name = "postal_code")
     public int getPostal() {
         return postal;
     }
