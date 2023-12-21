@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.HttpURLConnection;
 import java.util.List;
+
 
 @RestController
 public class UserController {
@@ -25,12 +27,27 @@ public class UserController {
     }
 
     @PostMapping("/users/add")
-    public void saveUser(@RequestBody User User) {
-        serv.save(User);
+    public String saveUser(@RequestBody User User) {
+        if(apiLookup(User.getPostal()).header == "200"){
+            User.setCity(apiLookup(User.getPostal()).city);
+            User.setState(apiLookup(User.getPostal()).state);
+            
+            serv.save(User);
+        }
+        return (HttpURLConnection) externalLookup.openConnection().setRequestMethod("GET").reason;
     }
 
     @DeleteMapping("/users/delete/{id}")
     public void deleteUser(@PathVariable Long id){
         serv.delete(id);
+    }
+
+    InputStream apiLookup(int postal){
+        String url =  "https://us-zipcode.api.smarty.com/lookup?"+
+        "auth-id=YOUR+AUTH-ID+HERE&"+
+        "auth-token=YOUR+AUTH-TOKEN+HERE&"+
+        "zipcode=" + toString(postal);
+            
+        return new URL(url.openConnection().getInputStream());
     }
 }
