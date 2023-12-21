@@ -1,0 +1,24 @@
+services:
+  db:
+    ports:
+      - 5432:5432
+    container-name: posgres
+    image: postgres
+    enviroment: 
+      - POSTGRES_DB = users
+      - POSTGRES_PASSWORD = password
+      - POSTGRES_USER = postgres
+    volumes:
+      - E:/code/postgres:/var/lib/postgresql/data
+    restart: always
+  backend:
+    build: .
+    container_name: userServiceApp
+    ports: 8080:8080
+    enviroment:
+      db-url: jdbc:postgresql://localhost:5432/users
+      db-username: postgres
+      db-password: password
+    depends_on:
+      -db
+    restart: always
