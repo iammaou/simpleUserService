@@ -1,24 +1,26 @@
+version: '3.9'
+
 services:
   db:
+    image: postgres:latest
+    container_name: postgres
     ports:
-      - 5432:5432
-    container-name: posgres
-    image: postgres
-    enviroment: 
-      - POSTGRES_DB = users
-      - POSTGRES_PASSWORD = password
-      - POSTGRES_USER = postgres
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=admin
     volumes:
       - E:/code/postgres:/var/lib/postgresql/data
     restart: always
   backend:
     build: .
-    container_name: userServiceApp
-    ports: 8080:8080
-    enviroment:
-      db-url: jdbc:postgresql://localhost:5432/users
-      db-username: postgres
-      db-password: password
+    container_name: userService
+    ports:
+    - "8080:8080"
+    environment:
+      DB_CONT_NAME: db
+      DB_PORT: 5432
+      DB_DATABASE: postgres
     depends_on:
-      -db
+      - db
     restart: always
