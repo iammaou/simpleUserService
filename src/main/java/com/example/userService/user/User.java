@@ -1,7 +1,12 @@
 package com.example.userService.user;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
+import java.util.Date;
 import java.util.Date;
 
 @Entity
@@ -9,10 +14,15 @@ import java.util.Date;
 public class User {
 
     private Long id;
+    @NotNull(message = "First name mandatory")
     private String firstName;
+    @NotNull(message = "Last name mandatory")
     private String lastName;
+    @NotNull(message = "E-mail mandatory")
     private String email;
+    @NotNull(message = "Birthday mandatory")
     private Date birth;
+    @NotNull(message = "Postal code mandatory")
     private int postal;
 
     public User(Long id, String firstName, String lastName, String email, Date birth, int postal) {
