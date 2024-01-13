@@ -1,20 +1,25 @@
 package com.example.userService.controller;
 
 import com.example.userService.service.userService;
-import com.example.userService.user.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import com.example.userService.model.User;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.HttpURLConnection;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 @RestController
 public class UserController {
 
-    @Autowired
     private userService serv;
+
+    public UserController(userService serv){
+        this.serv = serv;
+    }
 
     @GetMapping("/users")
     public List<User> getAll() {
@@ -22,32 +27,30 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public Object getUser(@PathVariable Long id){
+    public User getUser(@PathVariable Long id) {
         return serv.get(id);
     }
 
-    @PostMapping("/users/add")
-    public String saveUser(@RequestBody User User) {
-        if(apiLookup(User.getPostal()).header == "200"){
-            User.setCity(apiLookup(User.getPostal()).city);
-            User.setState(apiLookup(User.getPostal()).state);
-            
-            serv.save(User);
-        }
-        return (HttpURLConnection) externalLookup.openConnection().setRequestMethod("GET").reason;
+    @PostMapping("/users")
+    public User saveUser(@Valid @RequestBody User user) {
+        return serv.save(user);
     }
 
-    @DeleteMapping("/users/delete/{id}")
-    public void deleteUser(@PathVariable Long id){
+    @DeleteMapping("/users/{id}")
+    public void deleteUser(@PathVariable Long id) {
         serv.delete(id);
     }
 
-    InputStream apiLookup(int postal){
-        String url =  "https://us-zipcode.api.smarty.com/lookup?"+
-        "auth-id=YOUR+AUTH-ID+HERE&"+
-        "auth-token=YOUR+AUTH-TOKEN+HERE&"+
-        "zipcode=" + toString(postal);
-            
-        return new URL(url.openConnection().getInputStream());
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
     }
 }
