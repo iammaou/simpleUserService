@@ -29,5 +29,7 @@ public class User {
     @NotNull(message = "Birthday mandatory")
     private Date birth;
     @NotNull(message = "Postal code mandatory")
-    private int postal;
+    @ManyToOne
+    @JoinColumn
+    private Postal postal;
 }

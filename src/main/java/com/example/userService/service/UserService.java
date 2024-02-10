@@ -1,21 +1,24 @@
 package com.example.userService.service;
 
+import com.example.userService.model.Postal;
 import com.example.userService.repository.UserRepository;
 import com.example.userService.model.User;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.List;
 
 @Service
-public class userService{
+public class UserService {
 
-    private UserRepository repo;
-
-    public userService(UserRepository repo){
+    private final UserRepository repo;
+    private final PostalService postServ;
+    public UserService(UserRepository repo, PostalService postServ){
         this.repo = repo;
+        this.postServ = postServ;
     }
 
     public List<User> listAll(){
@@ -26,7 +29,17 @@ public class userService{
         return repo.findById(id).get();
     }
 
-    public User save(User user){
+    public User save(User user) throws IOException {
+        Postal postal;
+
+        if(postServ.checkExistence(user.getPostal().getPostal_code()).isEmpty()){
+            postal = postServ.apiLookup(user.getPostal().getPostal_code());
+            postServ.savePostal(postal);
+        } else {
+            postal = postServ.getPostal(user.getPostal().getPostal_code());
+        }
+        user.setPostal(postal);
+
         if(dateValidation(user.getBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())){
             repo.save(user);
             return user;

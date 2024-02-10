@@ -21,6 +21,8 @@ services:
       DB_CONT_NAME: db
       DB_PORT: 5432
       DB_DATABASE: postgres
+#      paste the api key below
+      API_KEY:
     depends_on:
       - db
     restart: always
