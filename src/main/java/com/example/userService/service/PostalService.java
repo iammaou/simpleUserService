@@ -4,6 +4,8 @@ import com.example.userService.model.Postal;
 import com.example.userService.repository.PostalRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Array;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -23,7 +26,8 @@ public class PostalService {
     private String apiKey;
 
     private PostalRepository repo;
-    private PostalService(PostalRepository repo){
+
+    public PostalService(PostalRepository repo){
         this.repo = repo;
     }
 
@@ -32,11 +36,11 @@ public class PostalService {
     }
 
     public Postal getPostal(Long id){
-        return repo.findById(id).get();
+        return repo.getReferenceById(id);
     }
 
-    public Postal savePostal(Postal postal){
-        return repo.save(postal);
+    public void savePostal(Postal postal){
+        repo.save(postal);
     }
 
     public Postal apiLookup(Long zip) throws IOException {
@@ -57,17 +61,23 @@ public class PostalService {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(sb.toString());
             jsonNode = jsonNode.path("results").path(zip.toString()).get(0);
-            Postal info = objectMapper.readValue(jsonNode.toString(), Postal.class);
 
-            return info;
+            return objectMapper.readValue(jsonNode.toString(), Postal.class);
         }
         else throw new ConnectException();
     }
 
+    public List<Object[]> byState(){
+        return repo.usersInStates();
+    }
+
     public Optional<Postal> checkExistence(Long zip){
-        Optional<Postal> optionalPostal= repo.findById(zip);
 
-        return optionalPostal;
+        return repo.findById(zip);
 
+    }
+
+    public List<Object[]> byCity() {
+        return repo.usersInCities();
     }
 }

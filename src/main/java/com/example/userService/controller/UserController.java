@@ -5,23 +5,24 @@ import com.example.userService.service.PostalService;
 import com.example.userService.service.UserService;
 import com.example.userService.model.User;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@AllArgsConstructor
 @RestController
 public class UserController {
 
-    private final UserService userServ;
-    public UserController(UserService userServ){
-        this.userServ = userServ;
-    }
+    private UserService userServ;
 
     @GetMapping("/users")
     public List<User> getAll() {
@@ -41,6 +42,16 @@ public class UserController {
     @DeleteMapping("/users/{id}")
     public void deleteUser(@PathVariable Long id) {
         userServ.delete(id);
+    }
+
+    @GetMapping("/users/stats/byState")
+    public List<Object[]> usersByState(){
+       return userServ.byState();
+    }
+
+    @GetMapping("/users/stats/byCity")
+    public List<Object[]> usersByCity(){
+        return userServ.byCity();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
