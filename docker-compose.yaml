@@ -22,7 +22,7 @@ services:
       DB_PORT: 5432
       DB_DATABASE: postgres
 #      paste the api key below
-      API_KEY: b95e8400-c114-11ee-a2d4-5d9094216cbb
+      API_KEY:
     depends_on:
       - db
     restart: always
