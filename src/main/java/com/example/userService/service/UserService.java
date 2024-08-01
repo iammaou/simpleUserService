@@ -1,11 +1,15 @@
 package com.example.userService.service;
 
 import com.example.userService.model.Postal;
-import com.example.userService.repository.UserRepository;
 import com.example.userService.model.User;
+import com.example.userService.repository.UserRepository;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.sql.Array;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -13,9 +17,9 @@ import java.util.List;
 
 @Service
 public class UserService {
-
     private final UserRepository repo;
     private final PostalService postServ;
+
     public UserService(UserRepository repo, PostalService postServ){
         this.repo = repo;
         this.postServ = postServ;
@@ -31,7 +35,6 @@ public class UserService {
 
     public User save(User user) throws IOException {
         Postal postal;
-
         if(postServ.checkExistence(user.getPostal().getPostal_code()).isEmpty()){
             postal = postServ.apiLookup(user.getPostal().getPostal_code());
             postServ.savePostal(postal);
@@ -50,9 +53,17 @@ public class UserService {
         repo.deleteById(id);
     }
 
+    public List<Object[]> byState(){
+        return postServ.byState();
+    }
+
     private boolean dateValidation(LocalDate date){
         LocalDate today = LocalDate.now();
 
         return !(Period.between(date, today).getDays() < 0);
+    }
+
+    public List<Object[]> byCity() {
+        return postServ.byCity();
     }
 }

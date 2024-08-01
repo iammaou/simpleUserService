@@ -24,7 +24,8 @@ public class User {
     private String firstName;
     @NotNull(message = "Last name mandatory")
     private String lastName;
-    @NotNull(message = "E-mail mandatory") @Email
+    @NotNull(message = "E-mail mandatory")
+    @Email
     private String email;
     @NotNull(message = "Birthday mandatory")
     private Date birth;
