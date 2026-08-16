@@ -1,58 +1,76 @@
 # User Service Application
 
-# Goal
+## Goal
 
+To provide a stateless Spring Boot REST microservice for managing US platform users, validating regional information via an external postal code API, and providing US regional statistics (app usage by state, city, etc.) for analytics and dashboard visualization. 
 
-# Task : Create User Service
+---
 
-Your task it to create User Service that keeps track of users on our platform and provide US regional statistics.
+## Architecture & Tech Stack
 
-## Service Requirements
+The application runs as a stateless microservice within a containerized environment: 
+- **Backend Framework:** Java with Spring Boot (Gradle build system). 
+- **Data Persistence:** PostgreSQL database for user profiles and regional analytics persistence. 
+- **External API Integration:** Zipcodebase API (`app.zipcodebase.com`) for automated US postal code lookup and region extraction. 
+- **Validation:** Spring Boot Validation for input bounds (preventing future birth dates, invalid emails, etc.). 
+- **Containerization:** Docker & Docker Compose setup linking the Spring Boot app and PostgreSQL instance. 
+- **API Testing:** Postman collection provided (`SimpleUserService.postman_collection.json`). 
 
-### Information requirements
-- User Service needs to keep track of these information: first name, last name, email, date of birth, region info (postal code, state, city *and/or other useful info by your choice*)
-- This app supports only US users
+### Project Stack Breakdown
 
-### Technical requirements
-- To insure correctness of region information validate all inputs (Spring Boot Validation) to prevent invalid emails, future dates of birth, and other edge cases
-- It would be wise to extract all needed region information by using only postal code (use external API to extract the rest), this will prevent wrong region information
-- We need to retrieve region statistics to be used in graphs and other services (app usage by state, city, ...)
-- This service has to be stateless because it will live in a microservice architecture
-- Use Docker to create a developer environment, and you will need to provide a Docker Compose to run this service with all dependencies (database, ...)
-- Provide us with Postman Collection and Environment to test the app
-- For every feature added write quality unit tests
+- **Framework:** Spring Boot (Gradle) 
+- **Database:** PostgreSQL 
+- **External Service:** Zipcodebase API 
+- **DevOps:** Docker, Docker Compose (`docker-compose.yaml`, `docker-compose-dev.yaml`) 
 
-### Development Guidelines
-- Use GitHub Issues to create tasks and plan your project, this will help you brake it down into small chunks
-- Use Git branching to work on individual issues (direct commits to main should be avoided)
-- Avoid hardcoding data, especially passwords or other types of credentials -> Use ENVIRONMENT VARIABLES
+---
 
-### Base Tech Stack:
-- Spring Boot
-- Postgres Database
-- Docker
-- Postman
+## Key Features & Functionality
 
+- **US User Tracking:** Stores first name, last name, email, date of birth, and validated region details (postal code, state, city). 
+- **Automated Region Extraction:** Integrates with Zipcodebase API to pull location metrics using solely the postal code. 
+- **Regional Analytics & Statistics:** Aggregates and retrieves user metrics grouped by city and state for external graphs and reporting. 
+- **Input Validation:** Enforces strict Spring Boot validation rules on incoming request payloads. 
+- **Stateless Microservice:** Scalable architecture configured for containerized deployments. 
+
+---
 
 ## Requirements
 
-- Docker and Docker Compose or Docker Desktop
- https://app.zipcodebase.com
-- Postman
+- Docker and Docker Compose (or Docker Desktop) 
+- Postman (for endpoint testing) 
+- Zipcodebase API Key (`https://app.zipcodebase.com`) 
 
-| Environment variable | Where to find them                                              |
-|----------------------|-----------------------------------------------------------------|
-| API_KEY              | https://app.zipcodebase.com                                     |
+---
 
-## How to run
+## Environment Variables
 
-- Clone this repo
-- Paste the API_KEY into the environment of the backend section
-- Run:
-```sh 
-docker compose up -d
-```
+| Environment Variable | Description / Source |
+|---|---|
+| `API_KEY` | Zipcodebase API key retrieved from `https://app.zipcodebase.com` | 
 
-## Usage
+---
 
-- Import Postman collection and environment
+## How to Run
+
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/iammaou/user-management-service.git
+   cd simple-user-service
+   ``` 
+
+2. **Configure Environment Variables:**
+   Add your `API_KEY` into the backend environment section of `docker-compose.yaml`. 
+
+3. **Start the Application:**
+   ```bash
+   docker compose up -d
+   ``` 
+
+---
+
+## Usage & Testing
+
+1. Import `SimpleUserService.postman_collection.json` into Postman. 
+2. Configure the Postman environment variables for your local base URL. 
+3. Execute user creation, validation, and regional statistics endpoints. 
